@@ -527,9 +527,6 @@ def foodHeuristic(state, problem):
             if(pellet[1] == first[1]):
                 third = pellet
         cornersLeft = [first,second,third,last]
-        #print "-----"
-        #print foodGridList
-        #print cornersLeft
         currentPosition = position
         while(len(cornersLeft) != 0):
             distances = [util.manhattanDistance(currentPosition,cornerLeft) for cornerLeft in cornersLeft]
@@ -543,8 +540,8 @@ def foodHeuristic(state, problem):
             currentPosition = closestCorner  
         
         
-        #cornersProblem = CornersFoodProblem(problem.startingGameState,[first,second,third,last])
-        #bestSolutionDistance = len(search.aStarSearch(cornersProblem, cornersHeuristic))
+        cornersProblem = CornersFoodProblem(problem.startingGameState,[first,second,third,last])
+        bestSolutionDistance = len(search.aStarSearch(cornersProblem, cornersHeuristic))
         #print numPelletsLeft,diagonalDistance,totalDistanceHeuristic,bestSolutionDistance
         
         
@@ -560,7 +557,7 @@ def foodHeuristic(state, problem):
 
     
 
-    return max(numPelletsLeft,diagonalDistance,totalDistanceHeuristic)#,bestSolutionDistance)#,farthestPelletDistance)
+    return max(numPelletsLeft,diagonalDistance,totalDistanceHeuristic,bestSolutionDistance)#,farthestPelletDistance)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
