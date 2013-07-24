@@ -217,7 +217,7 @@ class PositionSearchProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
             cost += self.costFn((x,y))
         return cost
-
+        
 class StayEastSearchAgent(SearchAgent):
     """
     An agent for position search with a cost function that penalizes being in
@@ -520,6 +520,7 @@ def foodHeuristic(state, problem):
     diagonalDistance = 0
     totalDistanceHeuristic = 0
     bestSolutionDistance = 0
+    corners = []
     if(numPelletsLeft>=2):
         first,last = foodGridList[0],foodGridList[numPelletsLeft-1]
         second,third = first,last
@@ -532,6 +533,7 @@ def foodHeuristic(state, problem):
             if(pellet[1] == first[1]):
                 third = pellet
         cornersLeft = [first,second,third,last]
+        corners = [first,second,third,last]
         currentPosition = position
         while(len(cornersLeft) != 0):
             distances = [util.manhattanDistance(currentPosition,cornerLeft) for cornerLeft in cornersLeft]
@@ -545,8 +547,8 @@ def foodHeuristic(state, problem):
             currentPosition = closestCorner  
         
         
-        cornersProblem = CornersFoodProblem(problem.startingGameState,[first,second,third,last])
-        bestSolutionDistance = len(search.aStarSearch(cornersProblem, cornersHeuristic))
+        #cornersProblem = CornersFoodProblem(problem.startingGameState,[first,second,third,last])
+        #bestSolutionDistance = len(search.aStarSearch(cornersProblem, cornersHeuristic))
         #print numPelletsLeft,diagonalDistance,totalDistanceHeuristic,bestSolutionDistance
         
         
@@ -554,6 +556,18 @@ def foodHeuristic(state, problem):
         #distanceToCloser = min(util.manhattanDistance(position,first),util.manhattanDistance(position,last))
         #diagonalDistance = distanceBetweenTwo+distanceToCloser
     
+    
+    allPositions = corners
+    allPositions.append(position)
+    for firstPosition in allPositions:
+        for secondPosition in allPositions:
+            if((firstPosition,secondPosition) in problem.heuristicInfo):
+                searchSolution = problem.heuristicInfo[firstPosition,secondPosition]
+            else:    
+                distanceProblem = PositionSearchProblem(problem.startingGameState,goal = firstPosition, start = secondPosition,warn=False)
+                searchSolution = len(search.aStarSearch(distanceProblem,manhattanHeuristic))
+            bestSolutionDistance = max(bestSolutionDistance,searchSolution)
+            problem.heuristicInfo[firstPosition,secondPosition] = problem.heuristicInfo[secondPosition,firstPosition] = searchSolution
     
     
     #distances = [util.manhattanDistance(position,pelletPosition) for pelletPosition in foodGridList]
