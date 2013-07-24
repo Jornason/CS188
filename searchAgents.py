@@ -194,6 +194,8 @@ class PositionSearchProblem(search.SearchProblem):
 
         # Bookkeeping for display purposes
         self._expanded += 1
+        if(self._expanded % 100 == 0):
+            print self._expanded
         if state not in self._visited:
             self._visited[state] = True
             self._visitedlist.append(state)
@@ -452,6 +454,9 @@ class FoodSearchProblem:
         "Returns successor states, the actions they require, and a cost of 1."
         successors = []
         self._expanded += 1
+        if(self._expanded % 100 == 0):
+            print self._expanded
+        
         for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             x,y = state[0]
             dx, dy = Actions.directionToVector(direction)
